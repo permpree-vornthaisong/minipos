@@ -12,6 +12,28 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({required this.storageService}) : super(ProductInitial()) {
     on<LoadProducts>(_onLoadProducts);
     on<AddProduct>(_onAddProduct);
+    on<UpdateProduct>(_onUpdateProduct);
+  }
+
+// เพิ่ม method
+  Future<void> _onUpdateProduct(
+    UpdateProduct event,
+    Emitter<ProductState> emit,
+  ) async {
+    try {
+      final currentProducts = state is ProductLoaded
+          ? (state as ProductLoaded).products
+          : <Product>[];
+
+      final updatedProducts = currentProducts.map((p) {
+        return p.id == event.product.id ? event.product : p;
+      }).toList();
+
+      await storageService.saveProducts(updatedProducts);
+      emit(ProductLoaded(updatedProducts));
+    } catch (e) {
+      emit(ProductError('แก้ไขสินค้าไม่สำเร็จ: $e'));
+    }
   }
 
   Future<void> _onLoadProducts(

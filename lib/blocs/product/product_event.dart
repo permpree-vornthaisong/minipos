@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:minipos/models/product.dart';
 
 abstract class ProductEvent extends Equatable {
   const ProductEvent();
@@ -19,4 +20,13 @@ class AddProduct extends ProductEvent {
 
   @override
   List<Object?> get props => [name, price];
+}
+
+class UpdateProduct extends ProductEvent {
+  final Product product;
+
+  const UpdateProduct(this.product);
+
+  @override
+  List<Object?> get props => [product];
 }
